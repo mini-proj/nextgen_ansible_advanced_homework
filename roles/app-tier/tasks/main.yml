@@ -1,2 +1,27 @@
 ---
+- name: install {{ payload }}
+  yum: 
+    name: "{{ payload }}"
+    state: present
+  tags:
+    - apps
+    - tomcat
+
+- name: Configure {{ payload }}
+  template:
+    src: index.html.j2
+    dest: {{ tomcat_web_root }}/index.html
+  notify: start {{ payload }}
+  tags:
+    - apps
+    - tomcat
+
+- name: Enable {{ payload }}
+  service:
+    name: "{{ payload }}"
+    state: started
+    enabled: true
+  tags:
+    - apps
+    - tomcat
 
