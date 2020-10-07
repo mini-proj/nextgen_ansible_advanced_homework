@@ -1,6 +1,14 @@
 - hosts: workstation
   gather_facts: false
   tasks:
+  - name: Openstack servers
+    os_server_facts:
+      cloud: openstack
+      server: 'frontend'
+    register: openstack_info
+    tags:
+      - osp.smoke 
+
   - name: OpenStack servers - Smoketest on Postgres Database
     postgresql_ping:
       db: flask_db
@@ -15,13 +23,11 @@
 
   - name: Curl website
     uri:
-      url: "http://frontend1/ping"
+      url: "http://{{ item.public_v4 }}"
       return_content: yes
-    until: '"alive" in result.content'
-    retries: 10
-    delay: 1
-    register: result
-    delegate_to: localhost
+    with_items: 
+      - "{{ openstack_info.ansible_facts.openstack_servers }}"
+    register: webpage
     tags:
       - osp.smoke
 
