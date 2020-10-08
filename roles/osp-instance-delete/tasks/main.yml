@@ -6,7 +6,8 @@
     register: result
 
   - name: Delete instances
-    cloud: openstack
+    os_server:    
+      cloud: openstack
       name: "{{ item.name }}"
       state: absent
     loop: "{{ result.openstack_servers }}"
