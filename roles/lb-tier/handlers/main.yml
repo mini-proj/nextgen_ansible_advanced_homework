@@ -1,7 +1,7 @@
 ---
 
-- name: start_haproxy
+- name: restart_haproxy
   service:
     name: haproxy
-    state: started
+    state: restarted
 
